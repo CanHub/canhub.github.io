@@ -18,7 +18,18 @@ const connectDb = async () => {
   collection = connection.db(DB).collection(COLLECTION);
 };
 
-exports.handler = async (_req, res) => {
+exports.handler = async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+
+  if (req.method === "OPTIONS") {
+    // Send response to OPTIONS requests
+    res.set("Access-Control-Allow-Methods", "GET");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+    res.set("Access-Control-Max-Age", "3600");
+
+    return res.status(204).send("");
+  }
+
   if (!collection) {
     await connectDb();
   }
