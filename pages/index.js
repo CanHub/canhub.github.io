@@ -1,65 +1,106 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React from "react";
 
-export default function Home() {
+import axios from "axios";
+import { Line } from "react-chartjs-2";
+import { useEffect, useState } from "react";
+
+const Home = () => {
+  const [dataWeek, setDataWeek] = useState({
+    labels: [],
+    datasets: [{ label: "Default", data: [] }],
+  });
+
+  const [dataMonth, setDataMonth] = useState({
+    labels: [],
+    datasets: [{ label: "Default", data: [] }],
+  });
+
+  const options = {
+    legend: {
+      labels: {
+        fontColor: "#eee",
+      },
+    },
+    scales: {
+      yAxes: [
+        {
+          gridLines: {
+            color: "#eee5",
+          },
+          ticks: {
+            fontColor: "#eee",
+          },
+        },
+      ],
+      xAxes: [
+        {
+          gridLines: {
+            color: "#eee5",
+          },
+          ticks: {
+            fontColor: "#eee",
+          },
+        },
+      ],
+    },
+  };
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await axios.get(
+        "https://europe-west1-canhub.cloudfunctions.net/get"
+      );
+
+      let labelsWeek = [];
+      let dataWeek = [];
+
+      for (let obj of response.data.weekly) {
+        labelsWeek.push(`${obj._id.year}-${obj._id.month}-${obj._id.week}`);
+        dataWeek.push(parseInt(obj.week));
+      }
+
+      setDataWeek({
+        labels: labelsWeek,
+        datasets: [
+          {
+            label: "Weekly",
+            data: dataWeek,
+            backgroundColor: "#eee0",
+            borderColor: "#eee",
+          },
+        ],
+      });
+
+      let labelsMonth = [];
+      let dataMonth = [];
+
+      for (let obj of response.data.monthly) {
+        labelsMonth.push(`${obj._id.year}-${obj._id.month}`);
+        dataMonth.push(parseInt(obj.week));
+      }
+
+      setDataMonth({
+        labels: labelsMonth,
+        datasets: [
+          {
+            label: "Monthly",
+            data: dataMonth,
+            backgroundColor: "#eee0",
+            borderColor: "#eee",
+          },
+        ],
+      });
+    };
+
+    getData();
+  }, []);
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+    <div className="main">
+      <Line data={dataMonth} options={options} />
+      <Line data={dataWeek} options={options} />
     </div>
-  )
-}
+  );
+};
+
+export default Home;
