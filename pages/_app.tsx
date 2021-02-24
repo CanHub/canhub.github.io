@@ -11,8 +11,11 @@ function MyApp({ Component, pageProps }) {
         <title>CanHub</title>
         <link rel="icon" href="/Avatar-purple.svg" />
       </Head>
+
       <img className={"logo"} src="Landscape-white.svg" />
+
       <Component {...pageProps} />
+
       <footer className={"footer"}>
         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
