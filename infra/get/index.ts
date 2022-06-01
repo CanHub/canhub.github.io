@@ -20,9 +20,7 @@ const connectDb = async () => {
     throw Error("No mongo url found");
   }
 
-  const connection = await MongoClient.connect(mongoUrl, {
-    useUnifiedTopology: true,
-  });
+  const connection = await MongoClient.connect(mongoUrl);
 
   collection = connection.db(DB).collection(COLLECTION);
 };
@@ -60,8 +58,8 @@ const getAggregatedData = (options: Record<string, object>) =>
             month: { $month: "$date" },
             ...options,
           },
-          week: { $last: "$week" },
-          month: { $last: "$month" },
+          week: { $max: "$week" },
+          month: { $max: "$month" },
         },
       },
       { $sort: { _id: 1 } },

@@ -47,7 +47,7 @@ const buildDataset = (input, key) => {
     const label = Object.values(obj._id).join("-");
 
     labels.push(label);
-    data.push(parseInt(obj.week));
+    data.push(parseInt(obj[key.replace("ly", "")]));
   }
 
   return {
