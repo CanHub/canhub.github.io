@@ -21,9 +21,7 @@ const connectDb = async () => {
     throw Error("No mongo url found");
   }
 
-  const connection = await MongoClient.connect(mongoUrl, {
-    useUnifiedTopology: true,
-  });
+  const connection = await MongoClient.connect(mongoUrl);
 
   collection = connection.db(DB).collection(COLLECTION);
 };
